@@ -6,6 +6,7 @@
 
 ```
 npm install
+npm install -g bower - if you don't have bower already
 bower install
 ```
 
