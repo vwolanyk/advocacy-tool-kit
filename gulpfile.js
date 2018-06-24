@@ -54,13 +54,13 @@ gulp.task('lint:test', () => {
 });
 
 gulp.task('liquify', () => {
-  gulp.src('app/*.{html,liquid}')
+ return gulp.src('app/*.{html,liquid}')
     .pipe($.liquify({}, {base: 'app/_includes'}))
     .pipe(gulp.dest('.tmp'));
 });
 
 gulp.task('html', ['liquify', 'styles', 'scripts'], () => {
-  return gulp.src('app/*.html')
+  return gulp.src('.tmp/*.html')
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
     .pipe($.if(/\.js$/, $.uglify({compress: {drop_console: true}})))
     .pipe($.if(/\.css$/, $.cssnano({safe: true, autoprefixer: false})))
@@ -165,7 +165,7 @@ gulp.task('wiredep', () => {
     }))
     .pipe(gulp.dest('app/styles'));
 
-  gulp.src('app/*.html')
+  gulp.src('app/**/*.html')
     .pipe(wiredep({
       exclude: ['bootstrap'],
       ignorePath: /^(\.\.\/)*\.\./
@@ -180,6 +180,10 @@ gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
 gulp.task('default', () => {
   return new Promise(resolve => {
     dev = false;
-    runSequence(['clean', 'wiredep'], 'build', resolve);
+    runSequence(
+      ['clean', 'wiredep'],
+      'build',
+      resolve
+    );
   });
 });
